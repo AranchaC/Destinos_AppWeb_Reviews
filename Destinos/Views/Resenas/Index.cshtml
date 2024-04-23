@@ -1,0 +1,180 @@
+﻿@model List<List<Destinos.Models.Resena>>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Reseñas</h2>
+
+<p>
+    @Html.ActionLink("Añadir nueva reseña", "Create")
+</p>
+@using (Html.BeginForm("Delete", "Resenas", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+}
+<div class="table-responsive">
+    <table class="table table-hover table-striped">
+        <thead>
+            <tr class="active">
+                <th>
+                    Destino
+                </th>
+                <th>
+                    Título
+                </th>
+                <th>
+                    Puntuación
+                </th>
+                <th>
+                    Usuario
+                </th>
+                <th>
+                    Fecha
+                </th>
+                <th>
+
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var grupo in Model)
+            {
+                foreach (var item in grupo)
+                {
+                    <tr>
+                        @if (item == grupo.First())
+                        {
+                            <td class="fondoFormClaro" rowspan="@grupo.Count">
+                                <strong>@Html.DisplayFor(modelItem => item.destino.Nombre)</strong>
+                            </td>
+                        }
+                        <td>@Html.DisplayFor(modelItem => item.Titulo)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Puntuacion)</td>
+                        <td>@Html.DisplayFor(modelItem => item.User.UserName)</td>
+                        <td>@Html.DisplayFor(modelItem => item.FechaResena)</td>
+                        <td>
+                            @Html.ActionLink("Editar", "Edit", new { id = item.Id })
+                            <span class="glyphicon glyphicon-pencil"></span>
+                            <a href="#" onclick="return confirmDelete('@item.Id', '@item.Titulo')"> | Borrar</a>
+                            <span class="glyphicon glyphicon-trash text-danger"></span>
+                            @Html.ActionLink("  |  Ver reseña", "Details", new { id = item.Id })
+                            <span class="glyphicon glyphicon-list-alt"></span>
+                        </td>
+                    </tr>
+
+                }
+            }
+
+        </tbody>
+
+    </table>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.1.7/dist/sweetalert2.min.js"></script>
+<script>
+    const swalWithBootstrapButtons = Swal.mixin({
+        customClass: {
+            confirmButton: "btn btn-success",
+            cancelButton: "btn btn-danger"
+        },
+        buttonsStyling: false
+    });
+
+    function confirmDelete(id, titulo) {
+        swalWithBootstrapButtons.fire({
+            title: "Confirmación",
+            text: `¿Estás seguro de que quieres borrar la reseña "${titulo}"?`,
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Sí, borrar",
+            cancelButtonText: "Cancelar",
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                var token = $('input[name="__RequestVerificationToken"]').val();
+                $.ajax({
+                    url: `/Resenas/Delete?id=${id}`,
+                    type: 'POST',
+                    data: {
+                        __RequestVerificationToken: token
+                    },
+                    success: function () {
+                        swalWithBootstrapButtons.fire({
+                            title: "Reseña borrada",
+                            text: "La reseña ha sido eliminada.",
+                            icon: "success"
+                        }).then(() => {
+                            location.reload();
+                        });
+                    },
+                    error: function () {
+                        swalWithBootstrapButtons.fire({
+                            title: "Error",
+                            text: "Hubo un problema al borrar la reseña.",
+                            icon: "error"
+                        });
+                    }
+                });
+            } else if (
+                /* Read more about handling dismissals below */
+                result.dismiss === Swal.DismissReason.cancel
+            ) {
+                swalWithBootstrapButtons.fire({
+                    title: "Cancelado",
+                    text: "Tu reseña está segura :)",
+                    icon: "error",
+                    timer: 1500
+                });
+            }
+        });
+        return false;
+    }
+
+    /*
+    function confirmDelete(id, titulo) {
+        //return confirm(`¿Estás seguro de que quieres borrar la reseña "${titulo}"?`);
+
+      Swal.fire({
+            title: 'Confirmación',
+            text: `¿Estás seguro de que quieres borrar la reseña "${titulo}"?`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Sí, borrar',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                var token = $('input[name="__RequestVerificationToken"]').val();
+                $.ajax({
+                    url: `/Resenas/Delete?id=${id}`,
+                    type: 'POST',
+                    data: {
+                        __RequestVerificationToken: token
+                    },
+                    success: function () {
+                        Swal.fire({
+                            icon: "success",
+                            title: "Reseña borrada",
+                            showConfirmButton: false,
+                            timer: 1500
+                        }).then(() => {
+                            location.reload();
+                        });
+                    },
+                    error: function () {
+                        Swal.fire(
+                            'Error',
+                            'Hubo un problema al borrar la reseña.',
+                            'error'
+                        );
+                    }
+                });
+            }
+        }); 
+        return false;
+    } */
+
+</script>
+

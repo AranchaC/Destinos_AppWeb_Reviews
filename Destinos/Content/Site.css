@@ -1,0 +1,83 @@
+﻿body {
+    padding-top: 50px;
+    padding-bottom: 20px;
+}
+
+/* Set padding to keep content from hitting the edges */
+.body-content {
+    padding-top: 150px;
+}
+
+/* Override the default bootstrap behavior where horizontal description lists 
+   will truncate terms that are too long to fit in the left column 
+*/
+.dl-horizontal dt {
+    white-space: normal;
+}
+
+/* Set width on the form input elements since they're 100% wide by default */
+input,
+select,
+textarea {
+    max-width: 280px;
+}
+
+.hr {
+    border-color:  #ccc;
+}
+
+.marca{
+    font-style:italic;
+    font-weight: bold;
+    font-size: 30px;
+    margin: 10px;
+}
+
+.logo-img{
+    border-radius: 50px;
+}
+.mb-4 {
+    margin-right: 15px;
+}
+
+
+.fondoForm {
+    background-color: #dec5ff;
+    padding: 10px;
+}
+
+.fondoFormClaro {
+    background-color: #ebddfe;
+    padding: 10px;
+}
+
+textarea.form-control {
+    height: 200px; /* o cualquier otro valor en píxeles */
+}
+
+/* formulario registro */
+.formRegistroFlex {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+}
+.imgRegistro {
+    flex-shrink: 0;
+    width: 40%;
+}
+
+.formRegistro{
+    flex: 1;
+    width: 40%;
+    margin-left: 10px;
+}
+
+/* vista ver reseñas */
+
+.resena-container {
+    border: 1px solid #ccc;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+}
+

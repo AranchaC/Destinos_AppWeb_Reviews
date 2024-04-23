@@ -1,0 +1,116 @@
+﻿@model Destinos.Models.Destino
+
+@{
+    ViewBag.Title = "Edit";
+}
+
+<h2>Editar destino</h2>
+<hr class="hr" />
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal fondoForm resena-container">
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.Id)
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Nombre, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Nombre, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Nombre, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Ciudad, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Ciudad, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Ciudad, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Comunidad_Region, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Comunidad_Region, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Comunidad_Region, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Pais, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Pais, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Pais, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Idioma, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Idioma, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Idioma, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Moneda, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Moneda, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Moneda, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="button" value="Guardar" class="btn btn-primary" onclick="return confirmSave('@Model.Id')" />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Volver al listado", "Index")
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.1.7/dist/sweetalert2.min.js"></script>
+<script>
+    function confirmSave(id) {
+        Swal.fire({
+            title: "¿Quieres guardar los cambios?",
+            showDenyButton: true,
+            confirmButtonText: "Guardar",
+            denyButtonText: `No guardar`
+        }).then((result) => {
+            if (result.isConfirmed) {
+                var token = $('input[name="__RequestVerificationToken"]').val();
+                $.ajax({
+                    url: `/Destinos/Edit?id=${id}`,
+                    type: 'POST',
+                    data: {
+                        __RequestVerificationToken: token,
+                        Id: id,
+                        Nombre: $('#Nombre').val(),
+                        Ciudad: $('#Ciudad').val(),
+                        Comunidad_Region: $('#Comunidad_Region').val(),
+                        Pais: $('#Pais').val(),
+                        Idioma: $('#Idioma').val(),
+                        Moneda: $('#Moneda').val()
+                    },
+                    success: function () {
+                        Swal.fire("¡Destino actualizado!", "", "success").then(() => {
+                            window.location.href = "/Destinos/Index";
+                        });
+                    },
+                    error: function () {
+                        Swal.fire("Error", "Hubo un problema al guardar los cambios.", "error");
+                    }
+                });
+            } else if (result.isDenied) {
+                Swal.fire("Los cambios no se han guardado", "", "info");
+            }
+        });
+    }
+</script>

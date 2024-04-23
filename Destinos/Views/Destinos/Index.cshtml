@@ -1,0 +1,102 @@
+﻿@model IEnumerable<Destinos.Models.Destino>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Lista de Destinos</h2>
+
+<p>
+    @Html.ActionLink("Crear nuevo Destino", "Create")
+</p>
+<div class="table-responsive">
+    <table class="table table-hover table-striped">
+        <thead>
+            <tr class="active">
+                <th>
+                    @Html.DisplayNameFor(model => model.Nombre)
+                </th>
+                <th>
+                    Valoración media
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Ciudad)
+                </th>
+                <th>
+                    @*@Html.DisplayNameFor(model => model.Comunidad_Region)*@
+                    Comunidad / Región
+                </th>
+                <th>
+                    País
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Idioma)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Moneda)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody class="table-group-divider">
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        <strong>
+                            @Html.DisplayFor(modelItem => item.Nombre)
+                        </strong>
+                    </td>
+                    <td>
+                        @if (item.ValoracionMedia.HasValue)
+                        {
+                            if (item.ValoracionMedia.Value % 1 == 0) // Comprueba si la valoración tiene decimales
+                            {
+                                @item.ValoracionMedia.Value.ToString("N0") // Formatea el número sin decimales
+                            }
+                            else
+                            {
+                                @item.ValoracionMedia.Value.ToString("N1")// Formatea el número con 1 decimale
+                            }
+                        }
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Ciudad)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Comunidad_Region)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Pais)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Idioma)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Moneda)
+                    </td>
+                    <td>
+                        @if (User.IsInRole("administrador"))
+                        {
+                            @Html.ActionLink("Editar", "Edit", new { id = item.Id })
+                            @Html.ActionLink("Borrar", "Delete", new { id = item.Id })
+
+                        }
+                        @Html.ActionLink("Editar", "Edit", new { id = item.Id })
+                        <span class="glyphicon glyphicon-pencil">  </span>   |
+                        @Html.ActionLink("Borrar", "Delete", new { id = item.Id })
+                        <span class="glyphicon glyphicon-trash text-danger"></span>   |
+                        @Html.ActionLink("Ver reseñas", "VerResenas", "Destinos", new { id = item.Id }, new { @class = "btn btn-primary btn-xs" })
+                        @*<span class="glyphicon glyphicon-star"></span>*@
+
+                        @*@User.Identity.Name*@
+
+                    </td>
+                </tr>
+            }
+        </tbody>
+
+
+    </table>
+</div>
+

@@ -1,0 +1,83 @@
+﻿@model Destinos.Models.Resena
+
+@{
+    ViewBag.Title = "Añadir reseña.";
+}
+
+<h2>Añadir nueva reseña</h2>
+<hr class="hr" />
+
+@*@using (Html.BeginForm())*@
+@using (Html.BeginForm("Create", "Resenas", FormMethod.Post, new { enctype = "multipart/form-data" }))
+
+
+{
+    @Html.AntiForgeryToken()
+
+    //enctype = "multipart/form-data"
+
+    <div class="form-horizontal resena-container fondoFormClaro">
+
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.LabelFor(model => model.IdDestino, "Destino", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownList("IdDestino", ((SelectList)ViewBag.IdDestino).OrderBy(x => x.Text), "Seleccione un destino", new { @class = "form-control" })
+
+                @*
+                    @Html.DropDownListFor(model => model.IdDestino, (SelectList)ViewBag.IdDestino, "Seleccione un destino", new { @class = "form-control" })
+
+                    @Html.DropDownList("IdDestino", ((SelectList)ViewBag.IdDestino).OrderBy(x => x.Text), "Seleccione un destino", new { @class = "form-control" })
+
+                    @Html.DropDownList("IdDestino", ((SelectList)ViewBag.IdDestino ?? new SelectList(new List<SelectListItem>(), "Value", "Text")).OrderBy(x => x.Text), "Seleccione un destino", new { @class = "form-control" })
+                    @Html.DropDownList("IdDestino", (SelectList)ViewBag.IdDestino, "Seleccione un destino", new { @class = "form-control" })
+                *@
+                @Html.ValidationMessageFor(model => model.IdDestino, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Titulo, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Titulo, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Titulo, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Puntuacion, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Puntuacion, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Puntuacion, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Comentario, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextAreaFor(model => model.Comentario, new { htmlAttributes = new { @class = "form-control", rows = "8", cols = "30" } })
+                @Html.ValidationMessageFor(model => model.Comentario, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        @for (int i = 0; i < 4; i++)
+        {
+            <div class="form-group">
+                <label class="control-label col-md-2" for="Fotos">Foto @(i + 1)</label>
+                <div class="col-md-10">
+                    <input type="file" name="FotosSubidas" />
+                </div>
+            </div>
+        }
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Guardar" class="btn btn-primary" />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Volver al listado", "Index")
+</div>

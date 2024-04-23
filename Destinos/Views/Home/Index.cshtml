@@ -1,0 +1,140 @@
+﻿@using Destinos.Models
+@{
+    ViewBag.Title = "Home Page";
+    var db = new ApplicationDbContext();
+    var randomResenas = db.Resenas.OrderBy(r => Guid.NewGuid()).Take(6).ToList(); // Obtener 6 reseñas aleatorias
+}
+
+@model Destino
+
+
+<div class="jumbotron">
+    <h2>
+        <span style="font-weight: bold">Bienvenido a</span>
+        <span style="font-weight: bold; font-size: 1.2em; font-style:italic;">"Recorre El Mundo Reviews"</span>
+    </h2>
+    <p class="lead">Descubre los destinos más fascinantes, las mejores experiencias y las reseñas más auténticas de viajeros como tú. En "Recorre El Mundo Reviews", nos apasiona el mundo de los viajes y queremos compartir contigo las mejores recomendaciones para hacer de tus aventuras algo inolvidable.</p>
+    <p>Encuentra información útil para planificar tu próximo viaje, incluyendo consejos prácticos, mejores épocas para visitar y recomendaciones personalizadas.</p>
+</div>
+
+@* CARRUSEL *@
+<div class="row">
+    @* CARRUSEL FOTOS *@
+    <div class="col-md-6">
+        <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
+            <!-- Indicators -->
+            <ol class="carousel-indicators">
+                @for (int i = 0; i < 4; i++)
+                {
+                    <li data-target="#carousel-example-generic" data-slide-to="@i" class="@((i == 0) ? "active" : "")"></li>
+                }
+            </ol>
+
+            <!-- Wrapper for slides -->
+            <div class="carousel-inner" role="listbox">
+                @foreach (var imgPath in Directory.GetFiles(Server.MapPath("~/imgsCarusel/")).OrderBy(f => Guid.NewGuid()).Take(4))
+                {
+                    <div class="item @(imgPath == Directory.GetFiles(Server.MapPath("~/imgsCarusel/")).First() ? "active" : "")">
+                        <img src="@Url.Content("~/imgsCarusel/" + Path.GetFileName(imgPath))" alt="..." style="width:100%; height: 300px;">
+                    </div>
+                }
+            </div>
+
+            <!-- Controls -->
+            <a class="left carousel-control" href="#carousel-example-generic" role="button" data-slide="prev">
+                <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+                <span class="sr-only">Previous</span>
+            </a>
+            <a class="right carousel-control" href="#carousel-example-generic" role="button" data-slide="next">
+                <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+                <span class="sr-only">Next</span>
+            </a>
+        </div>
+    </div>
+
+    @* CARRUSEL RESEÑAS *@
+    <div class="col-md-6">
+        <div id="carousel-reviews" class="carousel slide" data-ride="carousel">
+            <!-- Indicators -->
+            <ol class="carousel-indicators">
+                @for (int i = 0; i < randomResenas.Count; i++)
+                {
+                    <li data-target="#carousel-reviews" data-slide-to="@i" class="@((i == 0) ? "active" : "")"></li>
+                }
+            </ol>
+
+            <!-- Wrapper for slides -->
+            <div class="carousel-inner" role="listbox">
+                @for (int i = 0; i < randomResenas.Count; i++)
+                {
+                    <div class="item @(i == 0 ? "active" : "")">
+                        <div class="resena-container fondoFormClaro" style="margin-bottom: 0px">
+                            <h3>@randomResenas[i].destino.Nombre</h3>
+                            <h4>@randomResenas[i].Titulo</h4>
+                            <hr class="hr" />
+                            <dl class="dl-horizontal">
+                                <dt>
+                                    Usuario
+                                </dt>
+                                <dd>
+                                    @Html.DisplayFor(modelItem => randomResenas[i].User.UserName)
+                                </dd>
+                                <dt>
+                                    Puntuación
+                                </dt>
+                                <dd>
+                                    @Html.DisplayFor(modelItem => randomResenas[i].Puntuacion)
+                                </dd>
+                                <dt>
+                                    Fecha de la reseña
+                                </dt>
+                                <dd>
+                                    @Html.DisplayFor(modelItem => randomResenas[i].FechaResena)
+                                </dd>
+                                <dt style="font-size: 18px">
+                                    @Html.DisplayNameFor(modelItem => randomResenas[i].Comentario)
+                                </dt>
+                                <dd style="font-size: 18px">
+                                    @Html.DisplayFor(modelItem => randomResenas[i].Comentario)
+                                </dd>
+                            </dl>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <!-- Controls -->
+            <a class="left carousel-control" href="#carousel-reviews" role="button" data-slide="prev">
+                <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+                <span class="sr-only">Previous</span>
+            </a>
+            <a class="right carousel-control" href="#carousel-reviews" role="button" data-slide="next">
+                <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+                <span class="sr-only">Next</span>
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-4 mb-4">
+        <h2>Destinos destacados</h2>
+        <p>
+            Explora una amplia variedad de destinos alrededor del mundo, desde playas paradisíacas hasta ciudades históricas.
+        </p>
+        <p><a class="btn btn-default" href="@Url.Content("~/Destinos")">Explora   <span class="glyphicon glyphicon-globe"></span></a></p>
+    </div>
+    <div class="col-md-4 mb-4">
+        <h2>Reseñas honestas:</h2>
+        <p>Lee reseñas auténticas y actualizadas de viajeros reales, con detalles sobre alojamiento, gastronomía, actividades y mucho más.</p>
+        <p><a class="btn btn-default" href="@Url.Content("~/Resenas")">Descubre  <span class="glyphicon glyphicon-thumbs-up"></span></a></p>
+    </div>
+    <div class="col-md-4">
+        <h2>¡Viaja con nosotros!</h2>
+        <p>
+            Únete a nuestra comunidad de viajeros para tener acceso completo a todas nuestras reseñas
+            y compartir tus propias experiencias.
+        </p>
+        <p><a class="btn btn-default" href="@Url.Content("~/Account/Register")"> Regístrate  <span class="glyphicon glyphicon-user"></span></a></p>
+    </div>
+</div>

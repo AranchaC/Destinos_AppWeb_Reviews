@@ -1,0 +1,97 @@
+﻿@model Destinos.Models.Destino
+
+@{
+    ViewBag.Title = "Reseñas de " + Model.Nombre;
+}
+
+<h2>@ViewBag.Title</h2>
+
+@foreach (var resena in Model.Resenas)
+{
+<div class="resena-container fondoFormClaro">
+    <h3>@resena.Titulo</h3>
+    <hr class="hr" />
+    <dl class="dl-horizontal">
+
+        <dt>
+            Usuario
+        </dt>
+        <dd>
+            @Html.DisplayFor(modelItem => resena.User.UserName)
+        </dd>
+
+        <dt>
+            Puntuación
+        </dt>
+        <dd>
+            @Html.DisplayFor(modelItem => resena.Puntuacion)
+        </dd>
+
+        <dt>
+            Fecha de la reseña
+        </dt>
+        <dd>
+            @Html.DisplayFor(modelItem => resena.FechaResena)
+        </dd>
+
+        <dt style="font-size: 18px">
+            @Html.DisplayNameFor(modelItem => resena.Comentario)
+        </dt>
+        <dd style="font-size: 18px">
+            @Html.DisplayFor(modelItem => resena.Comentario)
+        </dd>
+    </dl>
+    <hr class="hr" />
+    <h4>Información del destino:</h4>
+    <dl class="dl-horizontal" style="font-size:smaller">
+        <dt>
+            Ciudad
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Ciudad)
+        </dd>
+        <dt>
+            Comunidad / Región
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Comunidad_Region)
+        </dd>
+        <dt>
+            País
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Pais)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Idioma)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Idioma)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Moneda)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Moneda)
+        </dd>
+    </dl>
+
+    @if (resena.Fotos != null && resena.Fotos.Any())
+    {
+        <hr class="hr" />
+        <h4>Fotos del usuario</h4>
+        foreach (var foto in resena.Fotos)
+        {
+            <div class="image-container">
+                <img src="@Url.Content("~/imgsResenas/" + foto.IdResena + "/" + foto.UrlFoto)" alt="Foto" width="250" class="img-thumbnail" />
+            </div>
+        }
+    }
+</div>
+}
+
+<p>
+    @Html.ActionLink("Volver al listado", "Index")
+</p>
+

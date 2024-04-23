@@ -1,0 +1,110 @@
+﻿@model Destinos.Models.Resena
+
+@{
+    ViewBag.Title = "Details";
+}
+
+
+<h4>Detalles de la reseña</h4>
+
+<div>
+    <h2>@Html.DisplayFor(model => model.destino.Nombre)</h2>
+    <div class="resena-container fondoFormClaro " enctype="multipart/form-data">
+        <h3>@Html.DisplayFor(model => model.Titulo)</h3>
+        <hr class="hr" />
+        <dl class="dl-horizontal">
+            <dt>
+                Usuario
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.User.UserName)
+            </dd>
+            <dt>
+                Puntuación
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.Puntuacion)
+            </dd>
+            <dt>
+                Fecha de la reseña
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.FechaResena)
+            </dd>
+            <dt style="font-size: 18px">
+                @Html.DisplayNameFor(model => model.Comentario)
+            </dt>
+            <dd style="font-size: 18px">
+                @Html.DisplayFor(model => model.Comentario)
+            </dd>
+        </dl>
+        <hr class="hr" />
+        <h4>Información del destino:</h4>
+        <dl class="dl-horizontal" style="font-size:smaller">
+            <dt>
+                Ciudad
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.destino.Ciudad)
+            </dd>
+            <dt>
+                Comunidad / Región
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.destino.Comunidad_Region)
+            </dd>
+            <dt>
+                País
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.destino.Pais)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.destino.Idioma)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.destino.Idioma)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.destino.Moneda)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.destino.Moneda)
+            </dd>
+        </dl>
+
+        @if (Model.Fotos != null && Model.Fotos.Any())
+        {
+            <hr class="hr" />
+            <h4>Fotos del usuario</h4>
+            foreach (var foto in Model.Fotos)
+            {
+                <div class="image-container">
+                    <img src="@Url.Content("~/imgsResenas/" + foto.IdResena + "/" + foto.UrlFoto)" alt="Foto" width="250" class="img-thumbnail" />
+                </div>
+            }
+        }
+
+        @*@if (!string.IsNullOrEmpty(Model.UrlFoto))
+        {
+            var fotos = Model.UrlFoto.Split(';');
+            System.Diagnostics.Debug.WriteLine($"Cadena de fotos dividida: {string.Join(", ", fotos)}"); // Añadido para depuración
+
+            foreach (var foto in fotos)
+            {
+                if (!string.IsNullOrEmpty(foto))
+                {
+                    <div class="image-container">
+                        <img src="@Url.Content("~/imgsResenas/" + foto)" alt="Foto" width="250" class="img-thumbnail" />
+                    </div>
+                }
+            }
+        }*@
+
+    </div>
+</div>
+<p>
+    @Html.ActionLink("Editar", "Edit", new { id = Model.Id }) |
+    @Html.ActionLink("Volver al listado", "Index")
+</p>

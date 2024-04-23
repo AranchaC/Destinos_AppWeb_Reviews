@@ -1,0 +1,128 @@
+﻿@model Destinos.Models.Resena
+
+@{
+    ViewBag.Title = "Edit";
+}
+
+<h3>Editar reseña</h3>
+
+@using (Html.BeginForm("Edit", "Resenas", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal resena-container fondoForm">
+        <h3>
+            Destino:
+            @Html.DisplayFor(model => model.destino.Nombre)
+        </h3>
+        <hr class="hr" />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.Id)
+
+
+        @*<div class="form-group">
+                @Html.LabelFor(model => model.IdUsuario, "IdUsuario", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.DropDownList("IdUsuario", null, htmlAttributes: new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.IdUsuario, "", new { @class = "text-danger" })
+                </div>
+            </div>*@
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Titulo, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Titulo, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Titulo, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Puntuacion, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Puntuacion, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Puntuacion, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.FechaResena, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DisplayFor(model => model.FechaResena, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.FechaResena, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Comentario, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextAreaFor(model => model.Comentario, new { htmlAttributes = new { @class = "form-control", rows = "8", cols = "30" } })
+                @Html.ValidationMessageFor(model => model.Comentario, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        @for (int i = 0; i < 4; i++)
+        {
+            <div class="form-group">
+                <label class="control-label col-md-2">Foto @(i + 1)</label>
+                @{
+                    var foto = Model.Fotos != null && Model.Fotos.Count > i ? Model.Fotos[i] : null;
+                }
+                <div class="col-md-10">
+                    @if (foto != null)
+                    {
+                        <div class="image-container">
+                            <img src="@Url.Content("~/imgsResenas/" + foto.IdResena + "/" + foto.UrlFoto)" alt="Foto" width="250" class="img-thumbnail" />
+
+                            @Html.ActionLink("Eliminar", "EliminarFoto", new { idFoto = foto.Id }, new { @class = "btn btn-danger" }) |
+                        </div>
+                    }
+                    <input type="file" name="FotosSubidas" class="" />
+                    <br />
+                </div>
+            </div>
+        }
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="button" value="Guardar" class="btn btn-primary" onclick="return confirmSave('@Model.Id')" />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Volver al listado", "Index")
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.1.7/dist/sweetalert2.min.js"></script>
+<script>
+    function confirmSave(id) {
+        Swal.fire({
+            title: "¿Quieres guardar los cambios?",
+            showDenyButton: true,
+            confirmButtonText: "Guardar",
+            denyButtonText: `No guardar`
+        }).then((result) => {
+            if (result.isConfirmed) {
+                var token = $('input[name="__RequestVerificationToken"]').val();
+                $.ajax({
+                    url: `/Resenas/Edit?id=${id}`,
+                    type: 'POST',
+                    data: {
+                        __RequestVerificationToken: token
+                    },
+                    success: function () {
+                        Swal.fire("¡Reseña actualizada!", "", "success").then(() => {
+                            window.location.href = "/Resenas/Index";
+                        });
+                    },
+                    error: function () {
+                        Swal.fire("Error", "Hubo un problema al guardar los cambios.", "error");
+                    }
+                });
+            } else if (result.isDenied) {
+                Swal.fire("Los cambios no se han guardado", "", "info");
+            }
+        });
+    }
+</script>
