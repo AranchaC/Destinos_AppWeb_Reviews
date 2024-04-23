@@ -105,5 +105,10 @@ namespace Destinos
         {
             return new ApplicationSignInManager(context.GetUserManager<ApplicationUserManager>(), context.Authentication);
         }
+
+        internal Task PasswordSignInAsync(ApplicationUser user, string password, bool rememberMe, bool shouldLockout)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

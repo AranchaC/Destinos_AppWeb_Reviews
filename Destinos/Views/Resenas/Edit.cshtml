@@ -62,7 +62,7 @@
 
         @for (int i = 0; i < 4; i++)
         {
-            <div class="form-group">
+            <div class="form-group" >
                 <label class="control-label col-md-2">Foto @(i + 1)</label>
                 @{
                     var foto = Model.Fotos != null && Model.Fotos.Count > i ? Model.Fotos[i] : null;
@@ -104,16 +104,16 @@
             denyButtonText: `No guardar`
         }).then((result) => {
             if (result.isConfirmed) {
-                var token = $('input[name="__RequestVerificationToken"]').val();
+                var formData = new FormData($('form')[0]);
                 $.ajax({
                     url: `/Resenas/Edit?id=${id}`,
                     type: 'POST',
-                    data: {
-                        __RequestVerificationToken: token
-                    },
+                    data: formData,
+                    processData: false,
+                    contentType: false,
                     success: function () {
                         Swal.fire("¡Reseña actualizada!", "", "success").then(() => {
-                            window.location.href = "/Resenas/Index";
+                            window.location.href = `/Resenas/Details/${id}`;
                         });
                     },
                     error: function () {

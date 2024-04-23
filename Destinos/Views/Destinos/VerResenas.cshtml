@@ -8,7 +8,7 @@
 
 @foreach (var resena in Model.Resenas)
 {
-<div class="resena-container fondoFormClaro">
+<div class="resena-container fondoForm">
     <h3>@resena.Titulo</h3>
     <hr class="hr" />
     <dl class="dl-horizontal">
@@ -81,12 +81,14 @@
     {
         <hr class="hr" />
         <h4>Fotos del usuario</h4>
-        foreach (var foto in resena.Fotos)
-        {
-            <div class="image-container">
-                <img src="@Url.Content("~/imgsResenas/" + foto.IdResena + "/" + foto.UrlFoto)" alt="Foto" width="250" class="img-thumbnail" />
-            </div>
-        }
+        <div class="image-container" style="display: flex; flex-wrap: wrap; gap: 20px; justify-content: space-evenly">
+            @foreach (var foto in resena.Fotos)
+            {
+                <div style="display: flex; flex-direction: column; align-items: center;">
+                    <img src="@Url.Content("~/imgsResenas/" + foto.IdResena + "/" + foto.UrlFoto)" alt="Foto" width="450" class="img-thumbnail" />
+                </div>
+            }
+        </div>
     }
 </div>
 }

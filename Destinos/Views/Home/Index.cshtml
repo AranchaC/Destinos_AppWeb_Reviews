@@ -55,7 +55,7 @@
 
     @* CARRUSEL RESEÑAS *@
     <div class="col-md-6">
-        <div id="carousel-reviews" class="carousel slide" data-ride="carousel">
+        <div id="carousel-reviews" class="carousel slide" data-ride="carousel" style="border-radius: 5px">
             <!-- Indicators -->
             <ol class="carousel-indicators">
                 @for (int i = 0; i < randomResenas.Count; i++)
@@ -65,10 +65,10 @@
             </ol>
 
             <!-- Wrapper for slides -->
-            <div class="carousel-inner" role="listbox">
+            <div class="carousel-inner" role="listbox" style="border-radius: 5px">
                 @for (int i = 0; i < randomResenas.Count; i++)
                 {
-                    <div class="item @(i == 0 ? "active" : "")">
+                    <div class="item @(i == 0 ? "active" : "")" style="border-radius: 5px">
                         <div class="resena-container fondoFormClaro" style="margin-bottom: 0px">
                             <h3>@randomResenas[i].destino.Nombre</h3>
                             <h4>@randomResenas[i].Titulo</h4>
