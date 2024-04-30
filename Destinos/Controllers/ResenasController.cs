@@ -13,6 +13,8 @@ using System.Diagnostics;
 using System.Data.Entity.Validation;
 using System.Text;
 using System.Web.Helpers;
+using PagedList;
+using System.Globalization;
 
 namespace Destinos.Controllers
 {
@@ -21,11 +23,87 @@ namespace Destinos.Controllers
         private ApplicationDbContext db = new ApplicationDbContext();
 
         // GET: Resenas
-        public ActionResult Index()
+        public ActionResult Index(string sortOrder, string filtroActual, int? page, 
+            string buscar1String, string buscar2String, int? buscarInt)
         {
-            //var resenas = db.Resenas.Include(r => r.destino);
-            //return View(resenas.ToList());
+            ViewBag.CurrentSort = sortOrder;
+            ViewBag.PuntuacionSortParm = sortOrder == "Puntuacion" ? "Puntuacion_desc" : "Puntuacion";
+            ViewBag.UsuarioSortParm = sortOrder == "Usuario" ? "Usuario_desc" : "Usuario";
+            ViewBag.FechaSortParm = sortOrder == "FechaResena" ? "FechaResena_desc" : "FechaResena";
+            ViewBag.DestinoSortParm = String.IsNullOrEmpty(sortOrder) ? "Destino_desc" : "";
 
+            var resenas = db.Resenas.Include(r => r.destino).Include(r => r.User);
+
+            // paginación
+            if (buscar1String != null || buscar2String != null || buscarInt.HasValue)
+            {
+                page = 1;
+            }
+            else
+            {
+                buscar1String = filtroActual;
+            }
+
+            ViewBag.CurrentFilter = buscar1String;
+
+            // cuadros de Búsqueda
+            if (!String.IsNullOrEmpty(buscar1String))
+            {
+                resenas = resenas.Where(r => 
+                    CultureInfo.CurrentCulture.CompareInfo.IndexOf(
+                        r.User.UserName, buscar1String, 
+                        CompareOptions.IgnoreCase | CompareOptions.IgnoreNonSpace) >= 0);
+            }
+            if (!String.IsNullOrEmpty(buscar2String))
+            {
+                resenas = resenas.Where(r => 
+                    CultureInfo.CurrentCulture.CompareInfo.IndexOf(
+                        r.destino.Nombre, buscar2String, 
+                        CompareOptions.IgnoreCase | CompareOptions.IgnoreNonSpace) >= 0);
+            }
+            if (buscarInt.HasValue)
+            {
+                resenas = resenas.Where(r => r.Puntuacion == buscarInt.Value);
+            }
+
+            // Ordenación
+            switch (sortOrder)
+            {
+                case "Puntuacion":
+                    resenas = resenas.OrderBy(r => r.Puntuacion);
+                    break;
+                case "Puntuacion_desc":
+                    resenas = resenas.OrderByDescending(r => r.Puntuacion);
+                    break;
+                case "Usuario":
+                    resenas = resenas.OrderBy(r => r.User.UserName);
+                    break;
+                case "Usuario_desc":
+                    resenas = resenas.OrderByDescending(r => r.User.UserName);
+                    break;
+                case "FechaResena":
+                    resenas = resenas.OrderBy(r => r.FechaResena);
+                    break;
+                case "FechaResena_desc":
+                    resenas = resenas.OrderByDescending(r => r.FechaResena);
+                    break;
+                case "Destino_desc":
+                    resenas = resenas.OrderByDescending(r => r.destino.Nombre);
+                    break;
+                default:
+                    resenas = resenas.OrderBy(r => r.destino.Nombre);
+                    break;
+            }
+
+            int pageSize = 5;
+            int pageNumber = (page ?? 1);
+
+            var resenasAgrupadas = resenas
+                                .ToList()
+                                .GroupBy(r => r.destino.Nombre)
+                                .Select(group => group.OrderByDescending(r => r.FechaResena).ToList());
+
+            /*
             var resenasAgrupadas = db.Resenas
                 .Include(r => r.destino) // coge el destino asociado a cada reseña.
                 .OrderBy(r => r.destino.Nombre) // Agrupa las Resenas por destino.Nombre.
@@ -33,12 +111,12 @@ namespace Destinos.Controllers
                 .GroupBy(r => r.destino.Nombre) // Agrupa por nombre de destino. Todas las reseñas con el mismo destino.Nombre estarán en el mismo grupo.
                 .Select(group => group.OrderByDescending(r => r.FechaResena).ToList()) // Convierte cada grupo de reseñas en una lista.
                 .ToList(); // Convierte el resultado final (una lista de listas) en una lista.
-
+            */
             // esta línea de código está obteniendo todas las Resenas de la base de datos,
             // ordenándolas por el nombre del destino, agrupándolas por ese nombre, y finalmente
             // generando una lista donde cada elemento es otra lista de Resenas asociadas al mismo destino.
 
-            return View(resenasAgrupadas);
+        return View(resenasAgrupadas.ToPagedList(pageNumber, pageSize));
         }
 
         // GET: Resenas/Details/5
@@ -83,7 +161,6 @@ namespace Destinos.Controllers
                 resena.IdUser = usuario.Id;
             }
 
-
             // Punto de depuración para verificar el valor de IdDestino
             Debug.WriteLine($"IdDestino seleccionado: {resena.IdDestino}");
 
@@ -96,6 +173,7 @@ namespace Destinos.Controllers
                     db.Resenas.Add(resena);
                     db.SaveChanges();
                     Debug.WriteLine($"Reseña creada con ID: {resena.Id}");
+
                     //Ahora que ya tengo reseña con id, añado fotos si las hay:
                     var fotosList = new List<Foto>();
                     var resenaFolder = resena.Id.ToString(); // Nombre de la carpeta para la reseña

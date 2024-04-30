@@ -109,7 +109,16 @@
                     }
                 });
             } else if (result.isDenied) {
-                Swal.fire("Los cambios no se han guardado", "", "info");
+                Swal.fire({
+                    title: "Los cambios no se han guardado",
+                    icon: "info",
+                    timer: 2000,  // 2 segundos
+                    showConfirmButton: false
+                }).then(() => {
+                   // setTimeout(() => {
+                        window.location.href = "/Destinos/Index";
+                    //}, 2000);  // 2 segundos
+                });
             }
         });
     }

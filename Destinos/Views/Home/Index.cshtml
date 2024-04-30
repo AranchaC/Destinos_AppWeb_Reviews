@@ -3,6 +3,8 @@
     ViewBag.Title = "Home Page";
     var db = new ApplicationDbContext();
     var randomResenas = db.Resenas.OrderBy(r => Guid.NewGuid()).Take(6).ToList(); // Obtener 6 reseñas aleatorias
+    var randomFotos = Directory.GetFiles(Server.MapPath("~/imgsCarusel/")).OrderBy(f => Guid.NewGuid()).Take(6).ToList(); // Obtener 6 fotos aleatorias
+
 }
 
 @model Destino
@@ -24,7 +26,7 @@
         <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
             <!-- Indicators -->
             <ol class="carousel-indicators">
-                @for (int i = 0; i < 4; i++)
+                @for (int i = 0; i < 6; i++)
                 {
                     <li data-target="#carousel-example-generic" data-slide-to="@i" class="@((i == 0) ? "active" : "")"></li>
                 }
@@ -32,10 +34,11 @@
 
             <!-- Wrapper for slides -->
             <div class="carousel-inner" role="listbox">
-                @foreach (var imgPath in Directory.GetFiles(Server.MapPath("~/imgsCarusel/")).OrderBy(f => Guid.NewGuid()).Take(4))
+                @foreach (var imgPath in randomFotos)
                 {
-                    <div class="item @(imgPath == Directory.GetFiles(Server.MapPath("~/imgsCarusel/")).First() ? "active" : "")">
-                        <img src="@Url.Content("~/imgsCarusel/" + Path.GetFileName(imgPath))" alt="..." style="width:100%; height: 300px;">
+                    var imagePath = Url.Content("~/imgsCarusel/" + Path.GetFileName(imgPath));
+                    <div class="item @(imgPath == randomFotos.First() ? "active" : "")">
+                        <img src="@imagePath" alt="..." style="width:100%; height: 300px;">
                     </div>
                 }
             </div>

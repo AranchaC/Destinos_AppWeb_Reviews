@@ -1,4 +1,7 @@
-﻿@model List<List<Destinos.Models.Resena>>
+﻿@*@model List<List<Destinos.Models.Resena>>*@
+@model PagedList.IPagedList<List<Destinos.Models.Resena>>
+@using PagedList.Mvc;
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
 
 @{
     ViewBag.Title = "Index";
@@ -9,31 +12,50 @@
 <p>
     @Html.ActionLink("Añadir nueva reseña", "Create")
 </p>
-@using (Html.BeginForm("Delete", "Resenas", FormMethod.Post))
+@*@using (Html.BeginForm("Delete", "Resenas", FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+    }*@
+@using (Html.BeginForm("Index", "Reseñas", FormMethod.Get))
 {
     @Html.AntiForgeryToken()
+    <p>
+        Buscar por usuario: @Html.TextBox("buscar1String", ViewBag.CurrentFilter as string)
+        <input type="submit" value="Buscar" />
+    </p>
+    <p>
+        Buscar por Destino: @Html.TextBox("buscar2String", ViewBag.CurrentFilter as string)
+        <input type="submit" value="Buscar" />
+    </p>
+    <p>
+        Buscar por Puntuación: @Html.TextBox("buscarInt", null)
+        <input type="submit" value="Buscar" />
+    </p>
 }
+<p>
+    @Html.ActionLink("Ver listado completo", "Index")
+</p>
+
 <div class="table-responsive">
     <table class="table table-hover table-striped">
         <thead>
             <tr class="active">
                 <th>
-                    Destino
+                    @Html.ActionLink("Destino", "Index", new { sortOrder = ViewBag.DestinoSortParm, currentFilter = ViewBag.CurrentFilter })
                 </th>
                 <th>
                     Título
                 </th>
                 <th>
-                    Puntuación
+                    @Html.ActionLink("Puntuación", "Index", new { sortOrder = ViewBag.PuntuacionSortParm, currentFilter = ViewBag.CurrentFilter })
                 </th>
                 <th>
-                    Usuario
+                    @Html.ActionLink("Usuario", "Index", new { sortOrder = ViewBag.UsuarioSortParm, currentFilter = ViewBag.CurrentFilter })
                 </th>
                 <th>
-                    Fecha
+                    @Html.ActionLink("Fecha", "Index", new { sortOrder = ViewBag.FechaSortParm, currentFilter = ViewBag.CurrentFilter })
                 </th>
                 <th>
-
                 </th>
             </tr>
         </thead>
@@ -55,10 +77,10 @@
                         <td>@Html.DisplayFor(modelItem => item.FechaResena)</td>
                         <td>
                             @Html.ActionLink("Editar", "Edit", new { id = item.Id })
-                            <span class="glyphicon glyphicon-pencil"></span>
-                            <a href="#" onclick="return confirmDelete('@item.Id', '@item.Titulo')"> | Borrar</a>
-                            <span class="glyphicon glyphicon-trash text-danger"></span>
-                            @Html.ActionLink("  |  Ver reseña", "Details", new { id = item.Id })
+                            <span class="glyphicon glyphicon-pencil"></span> |
+                            @Html.ActionLink("Borrar", "Delete", new { id = item.Id }, new { onclick = "return confirmDelete('@item.Id', '@item.Titulo')" })
+                            <span class="glyphicon glyphicon-trash text-danger"></span>  |
+                            @Html.ActionLink("Ver reseña", "Details", new { id = item.Id })
                             <span class="glyphicon glyphicon-list-alt"></span>
                         </td>
                     </tr>
@@ -70,7 +92,14 @@
 
     </table>
 </div>
+<div>
+    Página @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) de @Model.PageCount
+    @Html.PagedListPager(Model, page => Url.Action("Index",
+        new { page, sortOrder = ViewBag.CurrentSort, currentFilter = ViewBag.filtroActual }))
+</div>
 
+
+@* SWEET ALERTS *@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.1.7/dist/sweetalert2.min.js"></script>
 <script>
     const swalWithBootstrapButtons = Swal.mixin({
@@ -172,7 +201,7 @@
                     }
                 });
             }
-        }); 
+        });
         return false;
     } */
 

@@ -1,4 +1,7 @@
-﻿@model IEnumerable<Destinos.Models.Destino>
+﻿@*@model IEnumerable<Destinos.Models.Destino>*@
+@model PagedList.IPagedList<Destinos.Models.Destino>
+@using PagedList.Mvc;
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
 
 @{
     ViewBag.Title = "Index";
@@ -9,31 +12,62 @@
 <p>
     @Html.ActionLink("Crear nuevo Destino", "Create")
 </p>
+@*@using (Html.BeginForm("Delete", "Destinos", FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+    }*@
+
+@using (Html.BeginForm("Index", "Destinos", FormMethod.Get))
+{
+    @Html.AntiForgeryToken()
+    <p>
+        Buscar por destino o ciudad: @Html.TextBox("buscar1String", ViewBag.CurrentFilter as string)
+        <input type="submit" value="Buscar" />
+    </p>
+    <p>
+        Buscar por País: @Html.TextBox("buscar2String")
+        <input type="submit" value="Buscar" />
+    </p>
+}
+
+<p>
+    @Html.ActionLink("Ver listado completo", "Index")
+</p>
+
 <div class="table-responsive">
     <table class="table table-hover table-striped">
         <thead>
             <tr class="active">
                 <th>
-                    @Html.DisplayNameFor(model => model.Nombre)
+                    @*@Html.DisplayNameFor(model => model.Nombre)*@
+                    @Html.ActionLink("Nombre", "Index", new { sortOrder = ViewBag.NameSortParm, currentFilter = ViewBag.CurrentFilter })
                 </th>
                 <th>
-                    Valoración media
+                    @*Valoración media*@
+                    @Html.ActionLink("Valoración media", "Index", new { sortOrder = ViewBag.ValSortParm, currentFilter = ViewBag.CurrentFilter })
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.Ciudad)
+                    @*@Html.DisplayNameFor(model => model.Ciudad)*@
+                    @Html.ActionLink("Ciudad", "Index", new { sortOrder = ViewBag.CiudadSortParm, currentFilter = ViewBag.CurrentFilter })
+
                 </th>
                 <th>
                     @*@Html.DisplayNameFor(model => model.Comunidad_Region)*@
                     Comunidad / Región
                 </th>
                 <th>
-                    País
+                    @Html.ActionLink("País", "Index", new { sortOrder = ViewBag.PaisSortParm, currentFilter = ViewBag.CurrentFilter })
+
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.Idioma)
+                    @*@Html.DisplayNameFor(model => model.Idioma)*@
+                    @Html.ActionLink("Idioma", "Index", new { sortOrder = ViewBag.IdiomaSortParm, currentFilter = ViewBag.CurrentFilter })
+
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.Moneda)
+                    @*@Html.DisplayNameFor(model => model.Moneda)*@
+                    @Html.ActionLink("Moneda", "Index", new { sortOrder = ViewBag.MonedaSortParm, currentFilter = ViewBag.CurrentFilter })
+
                 </th>
                 <th></th>
             </tr>
@@ -76,15 +110,16 @@
                         @Html.DisplayFor(modelItem => item.Moneda)
                     </td>
                     <td>
-                        @if (User.IsInRole("administrador"))
-                        {
-                            @Html.ActionLink("Editar", "Edit", new { id = item.Id })
-                            @Html.ActionLink("Borrar", "Delete", new { id = item.Id })
+                        @*@if (User.IsInRole("administrador"))
+                            {
+                                @Html.ActionLink("Editar", "Edit", new { id = item.Id })
+                                @Html.ActionLink("Borrar", "Delete", new { id = item.Id })
 
-                        }
+                            }*@
                         @Html.ActionLink("Editar", "Edit", new { id = item.Id })
                         <span class="glyphicon glyphicon-pencil">  </span>   |
-                        @Html.ActionLink("Borrar", "Delete", new { id = item.Id })
+                        @*<a href="#" onclick="return confirmDelete('@item.Id', '@item.Nombre')">  Borrar</a>*@
+                        @Html.ActionLink("Borrar", "Delete", new { id = item.Id }, new { onclick = "return confirmDelete('@item.Id', '@item.Nombre')" })
                         <span class="glyphicon glyphicon-trash text-danger"></span>   |
                         @Html.ActionLink("Ver reseñas", "VerResenas", "Destinos", new { id = item.Id }, new { @class = "btn btn-primary btn-xs" })
                         @*<span class="glyphicon glyphicon-star"></span>*@
@@ -95,8 +130,72 @@
                 </tr>
             }
         </tbody>
-
-
     </table>
 </div>
+<br />
+Página @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) de @Model.PageCount
+
+@Html.PagedListPager(Model, page => Url.Action("Index",
+    new { page, sortOrder = ViewBag.CurrentSort, filtroActual = ViewBag.filtroActual }))
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.1.7/dist/sweetalert2.min.js"></script>
+<script>
+    const swalWithBootstrapButtons = Swal.mixin({
+        customClass: {
+            confirmButton: "btn btn-success",
+            cancelButton: "btn btn-danger"
+        },
+        buttonsStyling: false
+    });
+
+    function confirmDelete(id, nombre) {
+        swalWithBootstrapButtons.fire({
+            title: "Confirmación",
+            text: `¿Estás seguro de que quieres borrar el destino "${nombre}"?`,
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Sí, borrar",
+            cancelButtonText: "Cancelar",
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                var token = $('input[name="__RequestVerificationToken"]').val();
+                $.ajax({
+                    url: `/Destinos/Delete?id=${id}`,
+                    type: 'POST',
+                    data: {
+                        __RequestVerificationToken: token
+                    },
+                    success: function () {
+                        swalWithBootstrapButtons.fire({
+                            title: "Destino borrado",
+                            text: `El destino "${nombre}" ha sido eliminado.`,
+                            icon: "success"
+                        }).then(() => {
+                            location.reload();
+                        });
+                    },
+                    error: function () {
+                        swalWithBootstrapButtons.fire({
+                            title: "Error",
+                            text: "Hubo un problema al borrar el destino.",
+                            icon: "error"
+                        });
+                    }
+                });
+            } else if (
+                /* Read more about handling dismissals below */
+                result.dismiss === Swal.DismissReason.cancel
+            ) {
+                swalWithBootstrapButtons.fire({
+                    title: "Cancelado",
+                    text: "Tu destino está seguro.s",
+                    icon: "error",
+                    timer: 1500
+                });
+            }
+        });
+        return false;
+    }
+</script>
 
