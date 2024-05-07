@@ -243,6 +243,10 @@
     <Compile Include="Migrations\202404160703188_16apr_2.Designer.cs">
       <DependentUpon>202404160703188_16apr_2.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202404301055144_anado Likes resenas.cs" />
+    <Compile Include="Migrations\202404301055144_anado Likes resenas.Designer.cs">
+      <DependentUpon>202404301055144_anado Likes resenas.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Destino.cs" />
@@ -487,6 +491,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202404160703188_16apr_2.resx">
       <DependentUpon>202404160703188_16apr_2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202404301055144_anado Likes resenas.resx">
+      <DependentUpon>202404301055144_anado Likes resenas.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

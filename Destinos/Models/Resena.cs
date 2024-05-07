@@ -35,6 +35,9 @@ namespace Destinos.Models
         [MaxLength(900)]
         public string UrlFoto { get; set; }
 
+        public int Likes { get; set; } // Agregar esta propiedad para manejar los likes
+
+
         public virtual List<Foto> Fotos { get; set; }
 
     }

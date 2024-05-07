@@ -32,12 +32,22 @@
             </div>
 
             <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    <li>@Html.ActionLink("Inicio", "Index", "Home")</li>
-                    <li>@Html.ActionLink("Destinos", "Index", "Destinos")</li>
-                    <li>@Html.ActionLink("Reseñas", "Index", "Resenas")</li>
-                    <li>@Html.ActionLink("Acerca de", "About", "Home")</li>
-                    <li>@Html.ActionLink("Contacto", "Contact", "Home")</li>
+                <ul class="nav navbar-nav nav-pills">
+                    <li @(ViewContext.RouteData.Values["Controller"].ToString() == "Home" && ViewContext.RouteData.Values["Action"].ToString() == "Index" ? "class=active" : "")>
+                        @Html.ActionLink("Inicio", "Index", "Home")
+                    </li>
+                    <li @(ViewContext.RouteData.Values["Controller"].ToString() == "Destinos" ? "class=active" : "")>
+                        @Html.ActionLink("Destinos", "Index", "Destinos")
+                    </li>
+                    <li @(ViewContext.RouteData.Values["Controller"].ToString() == "Resenas" ? "class=active" : "")>
+                        @Html.ActionLink("Reseñas", "Index", "Resenas")
+                    </li>
+                    <li @(ViewContext.RouteData.Values["Controller"].ToString() == "Home" && ViewContext.RouteData.Values["Action"].ToString() == "About" ? "class=active" : "")>
+                        @Html.ActionLink("Acerca de", "About", "Home")
+                    </li>
+                    <li @(ViewContext.RouteData.Values["Controller"].ToString() == "Home" && ViewContext.RouteData.Values["Action"].ToString() == "Contact" ? "class=active" : "")>
+                        @Html.ActionLink("Contacto", "Contact", "Home")
+                    </li>
 
                 </ul>
                 @Html.Partial("_LoginPartial")

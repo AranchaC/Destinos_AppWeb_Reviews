@@ -1,10 +1,12 @@
 ﻿@*@model List<List<Destinos.Models.Resena>>*@
-@model PagedList.IPagedList<List<Destinos.Models.Resena>>
+@*@model PagedList.IPagedList<List<Destinos.Models.Resena>>*@
+@model PagedList.IPagedList<Destinos.Models.Resena>
+
 @using PagedList.Mvc;
 <link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
 
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "Lista de reseñas";
 }
 
 <h2>Reseñas</h2>
@@ -16,7 +18,7 @@
     {
         @Html.AntiForgeryToken()
     }*@
-@using (Html.BeginForm("Index", "Reseñas", FormMethod.Get))
+@using (Html.BeginForm("Index", "Resenas", FormMethod.Get))
 {
     @Html.AntiForgeryToken()
     <p>
@@ -60,38 +62,70 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (var grupo in Model)
-            {
-                foreach (var item in grupo)
-                {
-                    <tr>
-                        @if (item == grupo.First())
-                        {
-                            <td class="fondoFormClaro" rowspan="@grupo.Count">
-                                <strong>@Html.DisplayFor(modelItem => item.destino.Nombre)</strong>
-                            </td>
-                        }
-                        <td>@Html.DisplayFor(modelItem => item.Titulo)</td>
-                        <td>@Html.DisplayFor(modelItem => item.Puntuacion)</td>
-                        <td>@Html.DisplayFor(modelItem => item.User.UserName)</td>
-                        <td>@Html.DisplayFor(modelItem => item.FechaResena)</td>
-                        <td>
-                            @Html.ActionLink("Editar", "Edit", new { id = item.Id })
-                            <span class="glyphicon glyphicon-pencil"></span> |
-                            @Html.ActionLink("Borrar", "Delete", new { id = item.Id }, new { onclick = "return confirmDelete('@item.Id', '@item.Titulo')" })
-                            <span class="glyphicon glyphicon-trash text-danger"></span>  |
-                            @Html.ActionLink("Ver reseña", "Details", new { id = item.Id })
-                            <span class="glyphicon glyphicon-list-alt"></span>
-                        </td>
-                    </tr>
-
-                }
+            @{
+                var destinosMostrados = new List<string>();
             }
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td class="fondoFormClaro">
+                        <strong>
+                            @if (!destinosMostrados.Contains(item.destino.Nombre))
+                            {
+                                @Html.DisplayFor(modelItem => item.destino.Nombre)
+                                destinosMostrados.Add(item.destino.Nombre);
+                            }
+                        </strong>
+                    </td>
+                    <td>@Html.DisplayFor(modelItem => item.Titulo)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Puntuacion)</td>
+                    <td>@Html.DisplayFor(modelItem => item.User.UserName)</td>
+                    <td>@Html.DisplayFor(modelItem => item.FechaResena)</td>
+                    <td>
+                        @Html.ActionLink("Editar", "Edit", new { id = item.Id })
+                        <span class="glyphicon glyphicon-pencil"></span> |
+                        <a href="#" onclick="return confirmDelete('@item.Id', '@item.Titulo')">
+                            Borrar <span class="glyphicon glyphicon-trash text-danger"></span>
+                        </a>  |
+                        @Html.ActionLink("Ver reseña", "Details", new { id = item.Id })
+                        <span class="glyphicon glyphicon-list-alt"></span>
+                    </td>
+                </tr>
+            }
+
+            @*@foreach (var grupo in Model)
+        {
+            foreach (var item in grupo)
+            {
+                <tr>
+                    @if (item == grupo.First())
+                    {
+                        <td class="fondoFormClaro" rowspan="@grupo.Count">
+                            <strong>@Html.DisplayFor(modelItem => item.destino.Nombre)</strong>
+                        </td>
+                    }
+                    <td>@Html.DisplayFor(modelItem => item.Titulo)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Puntuacion)</td>
+                    <td>@Html.DisplayFor(modelItem => item.User.UserName)</td>
+                    <td>@Html.DisplayFor(modelItem => item.FechaResena)</td>
+                    <td>
+                        @Html.ActionLink("Editar", "Edit", new { id = item.Id })
+                        <span class="glyphicon glyphicon-pencil"></span> |
+                        @Html.ActionLink("Borrar", "Delete", new { id = item.Id }, new { onclick = "return confirmDelete('@item.Id', '@item.Titulo')" })
+                        <span class="glyphicon glyphicon-trash text-danger"></span>  |
+                        @Html.ActionLink("Ver reseña", "Details", new { id = item.Id })
+                        <span class="glyphicon glyphicon-list-alt"></span>
+                    </td>
+                </tr>
+
+            }
+        }*@
 
         </tbody>
 
     </table>
 </div>
+<br />
 <div>
     Página @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) de @Model.PageCount
     @Html.PagedListPager(Model, page => Url.Action("Index",

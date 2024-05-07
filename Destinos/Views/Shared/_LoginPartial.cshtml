@@ -17,8 +17,16 @@
 }
 else
 {
-    <ul class="nav navbar-nav navbar-right">
-        <li>@Html.ActionLink("Registrarse", "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink" })</li>
-        <li>@Html.ActionLink("Iniciar sesión", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink" })</li>
+    <ul class="nav navbar-nav navbar-right" style="border: 1px solid white; border-radius: 10px">
+        <li>
+            <button type="button" onclick="location.href='@Url.Action("Register", "Account")'" class="btn btn-link">
+                <span class="glyphicon glyphicon-user"></span> Registrarse
+            </button>
+        </li>
+        <li>
+            <button type="button" onclick="location.href='@Url.Action("Login", "Account")'" class="btn btn-link">
+                <span class="glyphicon glyphicon-log-in"></span> Iniciar sesión
+            </button>
+        </li>
     </ul>
 }

@@ -4,7 +4,7 @@
 <link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
 
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "Lista de destinos";
 }
 
 <h2>Lista de Destinos</h2>
@@ -110,19 +110,26 @@
                         @Html.DisplayFor(modelItem => item.Moneda)
                     </td>
                     <td>
-                        @*@if (User.IsInRole("administrador"))
-                            {
-                                @Html.ActionLink("Editar", "Edit", new { id = item.Id })
-                                @Html.ActionLink("Borrar", "Delete", new { id = item.Id })
-
-                            }*@
+                    @*@if (User.IsInRole("administrador"))
+                    {
                         @Html.ActionLink("Editar", "Edit", new { id = item.Id })
-                        <span class="glyphicon glyphicon-pencil">  </span>   |
-                        @*<a href="#" onclick="return confirmDelete('@item.Id', '@item.Nombre')">  Borrar</a>*@
-                        @Html.ActionLink("Borrar", "Delete", new { id = item.Id }, new { onclick = "return confirmDelete('@item.Id', '@item.Nombre')" })
-                        <span class="glyphicon glyphicon-trash text-danger"></span>   |
-                        @Html.ActionLink("Ver reseñas", "VerResenas", "Destinos", new { id = item.Id }, new { @class = "btn btn-primary btn-xs" })
-                        @*<span class="glyphicon glyphicon-star"></span>*@
+                        @Html.ActionLink("Borrar", "Delete", new { id = item.Id })
+
+                    }*@
+                    @Html.ActionLink("Editar", "Edit", new { id = item.Id })
+                    <span class="glyphicon glyphicon-pencil">  </span>   |
+                    @*<a href="#" onclick="return confirmDelete('@item.Id', '@item.Nombre')">  Borrar</a>*@
+                    <a href="#" onclick="return confirmDelete('@item.Id', '@item.Nombre')">
+                        Borrar <span class="glyphicon glyphicon-trash text-danger"></span>
+                    </a>   |
+
+                    <button type="button" onclick="location.href = '@Url.Action("VerResenas", "Destinos", new { id = item.Id })'" class="btn btn-primary btn-xs">
+                        <span class="glyphicon glyphicon-star"></span> Ver reseñas
+                    </button>
+
+                    @*
+                    @Html.ActionLink("Ver reseñas", "VerResenas", "Destinos", new { id = item.Id }, new { @class = "btn btn-primary btn-xs" })
+                    <span class="glyphicon glyphicon-star"></span>*@
 
                         @*@User.Identity.Name*@
 
@@ -189,7 +196,7 @@ Página @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) de @Model.P
             ) {
                 swalWithBootstrapButtons.fire({
                     title: "Cancelado",
-                    text: "Tu destino está seguro.s",
+                    text: "Tu destino está seguro.",
                     icon: "error",
                     timer: 1500
                 });

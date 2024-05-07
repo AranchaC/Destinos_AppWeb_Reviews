@@ -8,89 +8,97 @@
 
 @foreach (var resena in Model.Resenas)
 {
-<div class="resena-container fondoForm">
-    <h3>@resena.Titulo</h3>
-    <hr class="hr" />
-    <dl class="dl-horizontal">
-
-        <dt>
-            Usuario
-        </dt>
-        <dd>
-            @Html.DisplayFor(modelItem => resena.User.UserName)
-        </dd>
-
-        <dt>
-            Puntuación
-        </dt>
-        <dd>
-            @Html.DisplayFor(modelItem => resena.Puntuacion)
-        </dd>
-
-        <dt>
-            Fecha de la reseña
-        </dt>
-        <dd>
-            @Html.DisplayFor(modelItem => resena.FechaResena)
-        </dd>
-
-        <dt style="font-size: 18px">
-            @Html.DisplayNameFor(modelItem => resena.Comentario)
-        </dt>
-        <dd style="font-size: 18px">
-            @Html.DisplayFor(modelItem => resena.Comentario)
-        </dd>
-    </dl>
-    <hr class="hr" />
-    <h4>Información del destino:</h4>
-    <dl class="dl-horizontal" style="font-size:smaller">
-        <dt>
-            Ciudad
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Ciudad)
-        </dd>
-        <dt>
-            Comunidad / Región
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Comunidad_Region)
-        </dd>
-        <dt>
-            País
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Pais)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Idioma)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Idioma)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Moneda)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Moneda)
-        </dd>
-    </dl>
-
-    @if (resena.Fotos != null && resena.Fotos.Any())
-    {
-        <hr class="hr" />
-        <h4>Fotos del usuario</h4>
-        <div class="image-container" style="display: flex; flex-wrap: wrap; gap: 20px; justify-content: space-evenly">
-            @foreach (var foto in resena.Fotos)
+    <div class="resena-container fondoForm">
+        <!-- Contador de likes y botón de like -->
+        <div>
+            <span>@resena.Likes</span> personas les gusta esto.
+            @using (Html.BeginForm("Like", "Resenas", new { id = resena.Id }, FormMethod.Post))
             {
-                <div style="display: flex; flex-direction: column; align-items: center;">
-                    <img src="@Url.Content("~/imgsResenas/" + foto.IdResena + "/" + foto.UrlFoto)" alt="Foto" width="450" class="img-thumbnail" />
-                </div>
+                <button type="submit" class="btn btn-primary btn-sm">Me gusta</button>
             }
         </div>
-    }
-</div>
+        <h3>@resena.Titulo</h3>
+        <hr class="hr" />
+        <dl class="dl-horizontal">
+
+            <dt>
+                Usuario
+            </dt>
+            <dd>
+                @Html.DisplayFor(modelItem => resena.User.UserName)
+            </dd>
+
+            <dt>
+                Puntuación
+            </dt>
+            <dd>
+                @Html.DisplayFor(modelItem => resena.Puntuacion)
+            </dd>
+
+            <dt>
+                Fecha de la reseña
+            </dt>
+            <dd>
+                @Html.DisplayFor(modelItem => resena.FechaResena)
+            </dd>
+
+            <dt style="font-size: 18px">
+                @Html.DisplayNameFor(modelItem => resena.Comentario)
+            </dt>
+            <dd style="font-size: 18px">
+                @Html.DisplayFor(modelItem => resena.Comentario)
+            </dd>
+        </dl>
+        <hr class="hr" />
+        <h4>Información del destino:</h4>
+        <dl class="dl-horizontal" style="font-size:smaller">
+            <dt>
+                Ciudad
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.Ciudad)
+            </dd>
+            <dt>
+                Comunidad / Región
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.Comunidad_Region)
+            </dd>
+            <dt>
+                País
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.Pais)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.Idioma)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.Idioma)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.Moneda)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Moneda)
+            </dd>
+        </dl>
+
+        @if (resena.Fotos != null && resena.Fotos.Any())
+        {
+            <hr class="hr" />
+            <h4>Fotos del usuario</h4>
+            <div class="image-container" style="display: flex; flex-wrap: wrap; gap: 20px; justify-content: space-evenly">
+                @foreach (var foto in resena.Fotos)
+                {
+                    <div style="display: flex; flex-direction: column; align-items: center;">
+                        <img src="@Url.Content("~/imgsResenas/" + foto.IdResena + "/" + foto.UrlFoto)" alt="Foto" width="450" class="img-thumbnail" />
+                    </div>
+                }
+            </div>
+        }
+    </div>
 }
 
 <p>

@@ -16,6 +16,27 @@ namespace Destinos.Controllers
     {
         private ApplicationDbContext db = new ApplicationDbContext();
 
+        [HttpPost]
+        public ActionResult Like(Guid id)
+        {
+            var resena = db.Resenas.Find(id);
+            if (resena != null)
+            {
+                // Incrementar el contador de likes
+                resena.Likes++;
+                db.SaveChanges();
+
+                // Obtener el destino de la reseña para redirigir nuevamente
+                var destinoId = resena.destino.Id;
+                return RedirectToAction("VerResenas", "Destinos", new { id = destinoId });
+            }
+
+            return HttpNotFound();
+        }
+
+
+
+
         // GET: Destinos
         public ActionResult Index( string sortOrder, string buscar1String, 
             string buscar2String, string filtroActual, int? page )

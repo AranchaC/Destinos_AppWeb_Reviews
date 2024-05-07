@@ -65,12 +65,12 @@ namespace Destinos.Models
     public class RegisterViewModel
     {
         [Required]
-        [StringLength(25, ErrorMessage = "El número de caracteres de {0} debe ser al menos {2}.", MinimumLength = 6)]
+        [StringLength(25, ErrorMessage = "El número de caracteres de {0} debe ser al menos {2}.", MinimumLength = 4)]
         [Display(Name = "Nombre de usuario")]
         public string UserName { get; set; }
 
         [Required]
-        [StringLength(25, ErrorMessage = "El número de caracteres de {0} debe ser al menos {2}.", MinimumLength = 6)]
+        [StringLength(25, ErrorMessage = "El número de caracteres de {0} debe ser al menos {2}.", MinimumLength = 3)]
         [Display(Name = "Nombre")]
         public string Nombre { get; set; }
 

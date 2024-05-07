@@ -22,6 +22,19 @@ namespace Destinos.Controllers
     {
         private ApplicationDbContext db = new ApplicationDbContext();
 
+        [HttpPost]
+        public ActionResult Like(Guid id)
+        {
+            var resena = db.Resenas.Find(id);
+            if (resena != null)
+            {
+                resena.Likes++;
+                db.SaveChanges();
+                return RedirectToAction("Details", new { id = id }); // Redirigir de vuelta a la vista Details
+            }
+            return HttpNotFound(); // Otra acción si la reseña no se encuentra
+        }
+
         // GET: Resenas
         public ActionResult Index(string sortOrder, string filtroActual, int? page, 
             string buscar1String, string buscar2String, int? buscarInt)
@@ -49,17 +62,20 @@ namespace Destinos.Controllers
             // cuadros de Búsqueda
             if (!String.IsNullOrEmpty(buscar1String))
             {
-                resenas = resenas.Where(r => 
-                    CultureInfo.CurrentCulture.CompareInfo.IndexOf(
-                        r.User.UserName, buscar1String, 
-                        CompareOptions.IgnoreCase | CompareOptions.IgnoreNonSpace) >= 0);
+                buscar1String = buscar1String.Normalize(NormalizationForm.FormD).ToLower();
             }
             if (!String.IsNullOrEmpty(buscar2String))
             {
-                resenas = resenas.Where(r => 
-                    CultureInfo.CurrentCulture.CompareInfo.IndexOf(
-                        r.destino.Nombre, buscar2String, 
-                        CompareOptions.IgnoreCase | CompareOptions.IgnoreNonSpace) >= 0);
+                buscar2String = buscar2String.Normalize(NormalizationForm.FormD).ToLower();
+            }
+
+            if (!String.IsNullOrEmpty(buscar1String))
+            {
+                resenas = resenas.Where(r => r.User.UserName.ToLower().Contains(buscar1String));
+            }
+            if (!String.IsNullOrEmpty(buscar2String))
+            {
+                resenas = resenas.Where(r => r.destino.Nombre.ToLower().Contains(buscar2String));
             }
             if (buscarInt.HasValue)
             {
@@ -91,17 +107,17 @@ namespace Destinos.Controllers
                     resenas = resenas.OrderByDescending(r => r.destino.Nombre);
                     break;
                 default:
-                    resenas = resenas.OrderBy(r => r.destino.Nombre);
+                    resenas = resenas.OrderBy(r => r.destino.Nombre).ThenByDescending(r => r.FechaResena);
                     break;
             }
 
-            int pageSize = 5;
+            int pageSize = 10;
             int pageNumber = (page ?? 1);
 
-            var resenasAgrupadas = resenas
-                                .ToList()
-                                .GroupBy(r => r.destino.Nombre)
-                                .Select(group => group.OrderByDescending(r => r.FechaResena).ToList());
+            //var resenasAgrupadas = resenas
+            //                    .ToList()
+            //                    .GroupBy(r => r.destino.Nombre)
+            //                    .Select(group => group.OrderByDescending(r => r.FechaResena).ToList());
 
             /*
             var resenasAgrupadas = db.Resenas
@@ -116,7 +132,7 @@ namespace Destinos.Controllers
             // ordenándolas por el nombre del destino, agrupándolas por ese nombre, y finalmente
             // generando una lista donde cada elemento es otra lista de Resenas asociadas al mismo destino.
 
-        return View(resenasAgrupadas.ToPagedList(pageNumber, pageSize));
+        return View(resenas.ToPagedList(pageNumber, pageSize));
         }
 
         // GET: Resenas/Details/5

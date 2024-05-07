@@ -1,7 +1,7 @@
 ﻿@model Destinos.Models.Resena
 
 @{
-    ViewBag.Title = "Details";
+    ViewBag.Title = "Detalles";
 }
 
 
@@ -10,6 +10,15 @@
 <div>
     <h2>@Html.DisplayFor(model => model.destino.Nombre)</h2>
     <div class="resena-container fondoForm " enctype="multipart/form-data">
+        <!-- Contador de likes y botón de like -->
+        <div>
+            <span id="likeCount">@Html.DisplayFor(model => model.Likes)</span> personas les gusta esto.
+            @using (Html.BeginForm("Like", "Resenas", new { id = Model.Id }, FormMethod.Post))
+            {
+                <button type="submit" class="btn btn-primary btn-sm">Me gusta</button>
+            }
+        </div>
+
         <h3>@Html.DisplayFor(model => model.Titulo)</h3>
         <hr class="hr" />
         <dl class="dl-horizontal">
@@ -87,22 +96,6 @@
                 }
             </div>
         }
-
-        @*@if (!string.IsNullOrEmpty(Model.UrlFoto))
-        {
-            var fotos = Model.UrlFoto.Split(';');
-            System.Diagnostics.Debug.WriteLine($"Cadena de fotos dividida: {string.Join(", ", fotos)}"); // Añadido para depuración
-
-            foreach (var foto in fotos)
-            {
-                if (!string.IsNullOrEmpty(foto))
-                {
-                    <div class="image-container">
-                        <img src="@Url.Content("~/imgsResenas/" + foto)" alt="Foto" width="250" class="img-thumbnail" />
-                    </div>
-                }
-            }
-        }*@
 
     </div>
 </div>
