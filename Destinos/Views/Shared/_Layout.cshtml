@@ -48,7 +48,13 @@
                     <li @(ViewContext.RouteData.Values["Controller"].ToString() == "Home" && ViewContext.RouteData.Values["Action"].ToString() == "Contact" ? "class=active" : "")>
                         @Html.ActionLink("Contacto", "Contact", "Home")
                     </li>
-
+                    @if (User.IsInRole("Administrador"))
+                    {
+                        <li style="border: 1px solid white; border-radius: 10px"
+                            @(ViewContext.RouteData.Values["Controller"].ToString() == "Usuarios" && ViewContext.RouteData.Values["Action"].ToString() == "GestionUsuarios" ? "class=active" : "")>
+                            @Html.ActionLink("Gestión de Usuarios", "GestionUsuarios", "Usuarios")
+                        </li>
+                    }
                 </ul>
                 @Html.Partial("_LoginPartial")
             </div>

@@ -95,10 +95,10 @@
                                 <dd>
                                     @Html.DisplayFor(modelItem => randomResenas[i].FechaResena)
                                 </dd>
-                                <dt style="font-size: 18px">
+                                <dt>
                                     @Html.DisplayNameFor(modelItem => randomResenas[i].Comentario)
                                 </dt>
-                                <dd style="font-size: 18px">
+                                <dd>
                                     @Html.DisplayFor(modelItem => randomResenas[i].Comentario)
                                 </dd>
                             </dl>
@@ -142,3 +142,17 @@
         <p><a class="btn btn-default" href="@Url.Content("~/Account/Register")"> Regístrate  <span class="glyphicon glyphicon-user"></span></a></p>
     </div>
 </div>
+
+@section scripts {
+    <script>
+        $(document).ready(function () {
+            var fotoCarouselHeight = $(".carousel-inner img").height(); // Altura del carrusel de fotos
+            $(".carousel-inner").css("height", fotoCarouselHeight); // Establecer la altura del carrusel de reseñas igual a la altura del carrusel de fotos
+        });
+
+        $(window).resize(function () {
+            var fotoCarouselHeight = $(".carousel-inner img").height(); // Altura del carrusel de fotos
+            $(".carousel-inner").css("height", fotoCarouselHeight); // Establecer la altura del carrusel de reseñas igual a la altura del carrusel de fotos
+        });
+    </script>
+}

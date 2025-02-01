@@ -1,0 +1,49 @@
+﻿@model List<IGrouping<string, Destinos.Models.Resena>>
+
+@{
+    ViewBag.Title = "Reseñas de " + ViewBag.Usuario.UserName;
+}
+
+<h2>Reseñas de @ViewBag.Usuario.UserName</h2>
+
+@if (Model.Any())
+{
+    foreach (var destinoGroup in Model)
+    {
+
+        <table class="table table-hover table-striped">
+            <thead>
+                <tr class="active">
+                    <th colspan="5" style="font-size: larger; font-style: italic; text-shadow: 0 0 4px #440072; color:white ">@destinoGroup.Key</th>
+                </tr>
+                <tr class="active">
+                    <th>Título</th>
+                    <th>Puntuación</th>
+                    <th>Comentario</th>
+                    <th>Fecha</th>
+                    <th>Fotos</th>
+                </tr>
+            </thead>
+            <tbody class="table-group-divider">
+                @foreach (var reseña in destinoGroup)
+                {
+                    <tr>
+                        <td>@reseña.Titulo</td>
+                        <td>@reseña.Puntuacion</td>
+                        <td>@reseña.Comentario</td>
+                        <td>@reseña.FechaResena.ToString("dd/MM/yyyy")</td>
+                        <td>Fecha</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+}
+else
+{
+    <p>No hay reseñas para mostrar.</p>
+}
+
+<p>
+    @Html.ActionLink("Volver al listado de usuarios", "GestionUsuarios")
+</p>

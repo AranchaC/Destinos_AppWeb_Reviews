@@ -1,0 +1,72 @@
+﻿@using Microsoft.AspNet.Identity
+@using PagedList.Mvc;
+
+@model PagedList.IPagedList<Destinos.Models.ApplicationUser>
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
+
+
+@{
+    ViewBag.Title = "Gestión de Usuarios";
+}
+
+<h2>Gestión de Usuarios</h2>
+@*@using (Html.BeginForm("Index", "Usuarios", FormMethod.Get))*@
+@using (Html.BeginForm())
+{
+    <p>
+        Buscar por nombre de usuario: @Html.TextBox("SearchString")
+        <input type="submit" value="Buscar" />
+    </p>
+}
+
+<div class="table-responsive">
+    <table class="table table-hover table-striped">
+        <thead>
+            <tr class="active">
+                <th>
+                    @Html.ActionLink("Usuario", "GestionUsuarios", new { sortOrder = ViewBag.UserNameSortParm })
+                </th>
+                <th>
+                    @Html.ActionLink("Nombre", "GestionUsuarios", new { sortOrder = ViewBag.NombreSortParm })
+                </th>
+                <th>
+                    @Html.ActionLink("Apellido", "GestionUsuarios", new { sortOrder = ViewBag.ApellidoSortParm })
+                </th>
+                <th>
+                    @Html.ActionLink("Email", "GestionUsuarios", new { sortOrder = ViewBag.EmailSortParm })
+                </th>
+                <th>
+                    @Html.ActionLink("Fecha de Registro", "GestionUsuarios", new { sortOrder = ViewBag.FechaRegistroSortParm })
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody class="table-group-divider">
+            @foreach (var usuario in Model)
+            {
+                <tr>
+                    <td>@usuario.UserName</td>
+                    <td>@usuario.Nombre</td>
+                    <td>@usuario.Apellido</td>
+                    <td>@usuario.Email</td>
+                    <td>@usuario.FechaRegistro.ToString("dd/MM/yyyy")</td>
+                    <td>
+                        <a href="@Url.Action("Contactar", "Usuarios", new { id = usuario.Id })" class="btn btn-primary">Contactar</a>
+                        <a href="@Url.Action("VerReseñasUsuario", "Usuarios", new { id = usuario.Id })" class="btn btn-info">Ver Reseñas</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+<br />
+Página @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) de @Model.PageCount
+
+@Html.PagedListPager(Model, page => Url.Action("GestionUsuarios",
+    new
+    {
+        page,
+        sortOrder = ViewBag.CurrentSort,
+        currentFilter = ViewBag.CurrentFilter,
+        searchString = ViewBag.CurrentFilter
+    }))

@@ -41,6 +41,7 @@ namespace Destinos.Controllers
         {
             ViewBag.CurrentSort = sortOrder;
             ViewBag.PuntuacionSortParm = sortOrder == "Puntuacion" ? "Puntuacion_desc" : "Puntuacion";
+            ViewBag.LikesSortParm = sortOrder == "Likes" ? "Likes_desc" : "Likes";
             ViewBag.UsuarioSortParm = sortOrder == "Usuario" ? "Usuario_desc" : "Usuario";
             ViewBag.FechaSortParm = sortOrder == "FechaResena" ? "FechaResena_desc" : "FechaResena";
             ViewBag.DestinoSortParm = String.IsNullOrEmpty(sortOrder) ? "Destino_desc" : "";
@@ -91,6 +92,12 @@ namespace Destinos.Controllers
                 case "Puntuacion_desc":
                     resenas = resenas.OrderByDescending(r => r.Puntuacion);
                     break;
+                case "Likes":
+                    resenas = resenas.OrderBy(r => r.Likes);
+                    break;
+                case "Likes_desc":
+                    resenas = resenas.OrderByDescending(r => r.Likes);
+                    break;
                 case "Usuario":
                     resenas = resenas.OrderBy(r => r.User.UserName);
                     break;
@@ -98,10 +105,10 @@ namespace Destinos.Controllers
                     resenas = resenas.OrderByDescending(r => r.User.UserName);
                     break;
                 case "FechaResena":
-                    resenas = resenas.OrderBy(r => r.FechaResena);
+                    resenas = resenas.OrderBy(r => r.FechaResena.ToString("dd/MM/yyyy"));
                     break;
                 case "FechaResena_desc":
-                    resenas = resenas.OrderByDescending(r => r.FechaResena);
+                    resenas = resenas.OrderByDescending(r => r.FechaResena.ToString("dd/MM/yyyy"));
                     break;
                 case "Destino_desc":
                     resenas = resenas.OrderByDescending(r => r.destino.Nombre);
@@ -111,7 +118,7 @@ namespace Destinos.Controllers
                     break;
             }
 
-            int pageSize = 10;
+            int pageSize = 20;
             int pageNumber = (page ?? 1);
 
             //var resenasAgrupadas = resenas

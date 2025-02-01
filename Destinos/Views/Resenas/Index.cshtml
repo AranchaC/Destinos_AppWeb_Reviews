@@ -3,6 +3,7 @@
 @model PagedList.IPagedList<Destinos.Models.Resena>
 
 @using PagedList.Mvc;
+@using Microsoft.AspNet.Identity
 <link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
 
 @{
@@ -52,6 +53,9 @@
                     @Html.ActionLink("Puntuación", "Index", new { sortOrder = ViewBag.PuntuacionSortParm, currentFilter = ViewBag.CurrentFilter })
                 </th>
                 <th>
+                    @Html.ActionLink("Likes Usuarios", "Index", new { sortOrder = ViewBag.LikesSortParm, currentFilter = ViewBag.CurrentFilter })
+                </th>
+                <th>
                     @Html.ActionLink("Usuario", "Index", new { sortOrder = ViewBag.UsuarioSortParm, currentFilter = ViewBag.CurrentFilter })
                 </th>
                 <th>
@@ -79,47 +83,55 @@
                     </td>
                     <td>@Html.DisplayFor(modelItem => item.Titulo)</td>
                     <td>@Html.DisplayFor(modelItem => item.Puntuacion)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Likes) <span class="glyphicon glyphicon-thumbs-up"></span> </td>
                     <td>@Html.DisplayFor(modelItem => item.User.UserName)</td>
                     <td>@Html.DisplayFor(modelItem => item.FechaResena)</td>
                     <td>
-                        @Html.ActionLink("Editar", "Edit", new { id = item.Id })
-                        <span class="glyphicon glyphicon-pencil"></span> |
-                        <a href="#" onclick="return confirmDelete('@item.Id', '@item.Titulo')">
-                            Borrar <span class="glyphicon glyphicon-trash text-danger"></span>
-                        </a>  |
                         @Html.ActionLink("Ver reseña", "Details", new { id = item.Id })
                         <span class="glyphicon glyphicon-list-alt"></span>
+                        @if (User.Identity.IsAuthenticated && (item.IdUser == User.Identity.GetUserId() || User.IsInRole("Administrador")))
+
+                        {
+                            <text> | </text>
+                            @Html.ActionLink("Editar", "Edit", new { id = item.Id })
+                            <span class="glyphicon glyphicon-pencil"></span>
+                            <text> | </text>
+                            <a href="#" onclick="return confirmDelete('@item.Id', '@item.Titulo')">
+                                Borrar <span class="glyphicon glyphicon-trash text-danger"></span>
+                            </a>
+                        }
+
                     </td>
                 </tr>
             }
 
             @*@foreach (var grupo in Model)
-        {
-            foreach (var item in grupo)
-            {
-                <tr>
-                    @if (item == grupo.First())
+                {
+                    foreach (var item in grupo)
                     {
-                        <td class="fondoFormClaro" rowspan="@grupo.Count">
-                            <strong>@Html.DisplayFor(modelItem => item.destino.Nombre)</strong>
-                        </td>
-                    }
-                    <td>@Html.DisplayFor(modelItem => item.Titulo)</td>
-                    <td>@Html.DisplayFor(modelItem => item.Puntuacion)</td>
-                    <td>@Html.DisplayFor(modelItem => item.User.UserName)</td>
-                    <td>@Html.DisplayFor(modelItem => item.FechaResena)</td>
-                    <td>
-                        @Html.ActionLink("Editar", "Edit", new { id = item.Id })
-                        <span class="glyphicon glyphicon-pencil"></span> |
-                        @Html.ActionLink("Borrar", "Delete", new { id = item.Id }, new { onclick = "return confirmDelete('@item.Id', '@item.Titulo')" })
-                        <span class="glyphicon glyphicon-trash text-danger"></span>  |
-                        @Html.ActionLink("Ver reseña", "Details", new { id = item.Id })
-                        <span class="glyphicon glyphicon-list-alt"></span>
-                    </td>
-                </tr>
+                        <tr>
+                            @if (item == grupo.First())
+                            {
+                                <td class="fondoFormClaro" rowspan="@grupo.Count">
+                                    <strong>@Html.DisplayFor(modelItem => item.destino.Nombre)</strong>
+                                </td>
+                            }
+                            <td>@Html.DisplayFor(modelItem => item.Titulo)</td>
+                            <td>@Html.DisplayFor(modelItem => item.Puntuacion)</td>
+                            <td>@Html.DisplayFor(modelItem => item.User.UserName)</td>
+                            <td>@Html.DisplayFor(modelItem => item.FechaResena)</td>
+                            <td>
+                                @Html.ActionLink("Editar", "Edit", new { id = item.Id })
+                                <span class="glyphicon glyphicon-pencil"></span> |
+                                @Html.ActionLink("Borrar", "Delete", new { id = item.Id }, new { onclick = "return confirmDelete('@item.Id', '@item.Titulo')" })
+                                <span class="glyphicon glyphicon-trash text-danger"></span>  |
+                                @Html.ActionLink("Ver reseña", "Details", new { id = item.Id })
+                                <span class="glyphicon glyphicon-list-alt"></span>
+                            </td>
+                        </tr>
 
-            }
-        }*@
+                    }
+                }*@
 
         </tbody>
 
@@ -187,7 +199,6 @@
                     title: "Cancelado",
                     text: "Tu reseña está segura :)",
                     icon: "error",
-                    timer: 1500
                 });
             }
         });

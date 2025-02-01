@@ -6,11 +6,18 @@
     @Html.AntiForgeryToken()
 
     <ul class="nav navbar-nav navbar-right">
-        <li>
-            <strong>
-                @Html.ActionLink("¡ Hola " + User.Identity.GetUserName() + " !", "Index", "Manage", routeValues: null, htmlAttributes: new { title = "Manage" })
-            </strong>
-        </li>
+        @if (User.IsInRole("Administrador"))
+            {
+                <li style="font-size: 20px; border: 1px solid white; border-radius: 10px">
+                    @Html.ActionLink("¡ Hola " + User.Identity.GetUserName() + " !", "Index", "Manage", routeValues: null, htmlAttributes: new { title = "Manage" })
+                </li>
+            }
+            else
+            {
+                <li>
+                    @Html.ActionLink("¡ Hola " + User.Identity.GetUserName() + " !", "Index", "Manage", routeValues: null, htmlAttributes: new { title = "Manage" })
+                </li>
+            }
         <li><a href="javascript:document.getElementById('logoutForm').submit()">Cerrar sesión</a></li>
     </ul>
     }

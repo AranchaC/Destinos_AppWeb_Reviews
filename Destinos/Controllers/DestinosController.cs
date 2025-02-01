@@ -12,6 +12,7 @@ using PagedList;
 
 namespace Destinos.Controllers
 {
+    //
     public class DestinosController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
@@ -33,8 +34,6 @@ namespace Destinos.Controllers
 
             return HttpNotFound();
         }
-
-
 
 
         // GET: Destinos
